@@ -8,7 +8,6 @@
 #include <nvs_flash.h>
 #include <sys/param.h>
 #include <esp_wifi.h>
-//#include <esp_log.h>
 
 #define WIFI_SSID "ESP32 OTA Update"
 #define WIFI_PASSWORD "linux"
