@@ -8,11 +8,9 @@
 #include <nvs_flash.h>
 #include <sys/param.h>
 #include <esp_wifi.h>
-//#include <esp_log.h>
 
 #define WIFI_SSID "ESP32 OTA Update"
-#define WIFI_PASSWORD "lovelinux"
-//static const char *TAG = "JMD";
+#define WIFI_PASSWORD "linux"
 /*
  * Serve OTA update portal (index.html)
  */
@@ -30,7 +28,6 @@ esp_err_t index_get_handler(httpd_req_t *req)
  */
 esp_err_t update_post_handler(httpd_req_t *req)
 {
-	
 	char buf[1000];
 	esp_ota_handle_t ota_handle;
 	int remaining = req->content_len;
