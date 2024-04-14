@@ -1,5 +1,4 @@
 #include <string.h>
-
 #include <freertos/FreeRTOS.h>
 #include <esp_http_server.h>
 #include <freertos/task.h>
@@ -8,9 +7,10 @@
 #include <nvs_flash.h>
 #include <sys/param.h>
 #include <esp_wifi.h>
+#include "lwip/err.h"
 
 #define WIFI_SSID "ESP32 OTA Update"
-#define WIFI_PASSWORD "linux"
+#define WIFI_PASSWORD "lovelinux"
 /*
  * Serve OTA update portal (index.html)
  */
@@ -28,7 +28,8 @@ esp_err_t index_get_handler(httpd_req_t *req)
  */
 esp_err_t update_post_handler(httpd_req_t *req)
 {
-	char buf[1000];
+	//buf size and attribute
+	char buf[1000] __attribute__((aligned(8)));
 	esp_ota_handle_t ota_handle;
 	int remaining = req->content_len;
 	
@@ -38,7 +39,6 @@ esp_err_t update_post_handler(httpd_req_t *req)
 	while (remaining > 0) {
 		int recv_len = httpd_req_recv(req, buf, MIN(remaining, sizeof(buf)));
 		
-		//httpd_resp_sendstr(req, "recv_len %d\n", recv_len);
 		// Timeout Error: Just retry
 		if (recv_len == HTTPD_SOCK_ERR_TIMEOUT) {
 			continue;
@@ -106,16 +106,18 @@ static esp_err_t http_server_init(void)
 /*
  * WiFi configuration
  */
+
+
 static esp_err_t softap_init(void)
 {
 	esp_err_t res = ESP_OK;
 
 	res |= esp_netif_init();
 	res |= esp_event_loop_create_default();
-	esp_netif_create_default_wifi_ap();
+    esp_netif_create_default_wifi_ap();
 
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-	res |= esp_wifi_init(&cfg);
+	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
 	wifi_config_t wifi_config = {
 		.ap = {
